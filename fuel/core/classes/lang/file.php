@@ -25,8 +25,7 @@ abstract class Lang_File implements Lang_Interface
 	{
 		$this->file = $file;
 
-		// we need the highest priority language last in the list
-		$this->languages = array_reverse($languages);
+		$this->languages = $languages;
 
 		$this->vars = array(
 			'APPPATH' => APPPATH,
@@ -45,7 +44,6 @@ abstract class Lang_File implements Lang_Interface
 	public function load($overwrite = false)
 	{
 		$paths = $this->find_file();
-
 		$lang = array();
 
 		foreach ($paths as $path)
@@ -130,12 +128,12 @@ abstract class Lang_File implements Lang_Interface
 			$paths = array_merge($paths, \Finder::search('lang'.DS.$lang, $this->file, $this->ext, true));
 		}
 
-		if (empty($paths))
+		if (count($paths) > 0)
 		{
-			throw new \LangException(sprintf('File "%s" does not exist.', $this->file));
+			return array_reverse($paths);
 		}
 
-		return $paths;
+		throw new \LangException(sprintf('File "%s" does not exist.', $this->file));
 	}
 
 	/**

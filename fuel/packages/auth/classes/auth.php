@@ -59,6 +59,9 @@ class Auth
 	{
 		\Config::load('auth', true);
 
+		// Whether to allow multiple drivers of any type, defaults to not allowed
+		static::$_verify_multiple = \Config::get('auth.verify_multiple_logins', false);
+
 		foreach((array) \Config::get('auth.driver', array()) as $driver => $config)
 		{
 			$config = is_int($driver)
@@ -66,8 +69,7 @@ class Auth
 				: array_merge($config, array('driver' => $driver));
 			static::forge($config);
 		}
-
-		// Set the first (or only) as the default instance for static usage
+		// set the first (or only) as the default instance for static usage
 		if ( ! empty(static::$_instances))
 		{
 			static::$_instance = reset(static::$_instances);
@@ -114,13 +116,6 @@ class Auth
 		{
 			// store this instance
 			static::$_instances[$id] = $driver;
-		}
-
-		// If we have more then one driver instance, check if we need concurrency
-		if (count(static::$_instances) > 1)
-		{
-			// Whether to allow multiple drivers of any type, defaults to not allowed
-			static::$_verify_multiple = \Config::get('auth.verify_multiple_logins', false);
 		}
 
 		return static::$_instances[$id];

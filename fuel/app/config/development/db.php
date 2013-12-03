@@ -1,14 +1,14 @@
 <?php
-/**
- * The development database settings. These get merged with the global settings.
- */
 
+/**
+ * The production database settings. These get merged with the global settings.
+ */
 return array(
-	'default' => array(
-		'connection'  => array(
-			'dsn'        => 'mysql:host=localhost;dbname=fuel_dev',
-			'username'   => 'root',
-			'password'   => 'root',
-		),
+    'default' => array(
+	'connection' => array(
+	    'dsn' => 'mysql:host=localhost;dbname=itbulgar_bitkp',
+	    'username' => 'itbulgar_bitkp',
+	    'password' => 'XF#3op?PXJRJ',
 	),
+    ),
 );

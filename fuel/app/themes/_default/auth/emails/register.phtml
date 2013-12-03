@@ -1,0 +1,8 @@
+Hello <?= $username; ?> <br />
+<br />
+Your login information for <?= $site_name; ?> is <br />
+Username: <?= $username; ?> <br />
+Password: <?= $password; ?> <br />
+<br />
+Click the following link to activate your account. <br />
+<?= \Html::anchor('auth/activate/' . $code); ?>

@@ -18,9 +18,6 @@ class Auth_Create_Permissiontables
 			\Config::load('ormauth', true);
 			$table = \Config::get('ormauth.table_name', 'users');
 
-			// make sure the configured DB is used
-			\DBUtil::set_connection(\Config::get('ormauth.db_connection', null));
-
 			// table users_perms
 			\DBUtil::create_table($table.'_permissions', array(
 				'id' => array('type' => 'int', 'constraint' => 11, 'auto_increment' => true),
@@ -35,9 +32,6 @@ class Auth_Create_Permissiontables
 			// add a unique index on group and permission
 			\DBUtil::create_index($table.'_permissions', array('area', 'permission'), 'permission', 'UNIQUE');
 		}
-
-		// reset any DBUtil connection set
-		\DBUtil::set_connection(null);
 	}
 
 	function down()
@@ -54,14 +48,8 @@ class Auth_Create_Permissiontables
 			\Config::load('ormauth', true);
 			$table = \Config::get('ormauth.table_name', 'users');
 
-			// make sure the configured DB is used
-			\DBUtil::set_connection(\Config::get('ormauth.db_connection', null));
-
 			// drop the admin_users_perms table
 			\DBUtil::drop_table($table.'_permissions');
 		}
-
-		// reset any DBUtil connection set
-		\DBUtil::set_connection(null);
 	}
 }

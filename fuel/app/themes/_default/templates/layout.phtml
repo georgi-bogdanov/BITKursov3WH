@@ -1,0 +1,71 @@
+<?php echo Html::doctype('html5'); ?>
+<html>
+    <head>
+        <title><?php echo $title; ?></title>
+        <meta charset='utf-8'>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<?php foreach ($meta as $meta_name => $meta_content): ?>
+    	<meta name="<?php echo $meta_name; ?>" content="<?php echo $meta_content; ?>" />
+	<?php endforeach; ?>
+	<?php echo \Theme::instance()->asset->css(array('bootstrap.min.css', 'main.css')); ?>
+	<?php echo \Theme::instance()->asset->js(array('jquery.min.js', 'bootstrap.min.js', 'main.js')); ?>
+	<?php echo \Theme::instance()->asset->render('header'); ?>
+        <script type="text/javascript">
+	    var BASE = '<?= Uri::base(false); ?>';
+        </script>
+    </head>
+    <body>
+	<?php if ($is_logged) : ?>
+    	<div class="navbar navbar-default navbar-fixed-top">
+    	    <div class="container">
+    		<div class="navbar-header">
+    		    <a class="navbar-brand" href="<?= Uri::base(false); ?>">Warehouse</a>
+    		</div>
+    		<div class="navbar-collapse collapse">
+    		    <ul class="nav navbar-nav">
+    			<li><a href="<?= Uri::base(false); ?>">Home</a></li>
+    			<li><a href="<?= Uri::create('stocks'); ?>">Stocks</a></li>
+    			<li><a href="<?= Uri::create('profile'); ?>">Profile</a></li>
+			    <?php if ($auth_instance->member(100)) : ?>
+				<li class="dropdown">
+				    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					Admin
+					<b class="caret"></b>
+				    </a>
+				    <ul class="dropdown-menu">
+					<li><a href="<?= Uri::create('stocks/edit'); ?>">Add Stocks</a></li>
+					<li><a href="<?= Uri::create('stockgroups'); ?>">Stocks Groups</a></li>
+					<li class="divider"></li>
+					<li><a href="<?= Uri::create('users'); ?>">Mange Users</a></li>
+					<li class="divider"></li>
+					<li class="dropdown-header">System Settings</li>
+					<li><a href="<?= Uri::create('users/admins'); ?>">Admin Users</a></li>
+					<li><a href="#">Configuration</a></li>
+				    </ul>
+				</li>
+			    <?php endif; ?>
+    		    </ul>
+    		    <ul class="nav navbar-nav navbar-right">
+    			<li><a href="<?= Uri::create('logout'); ?>">Logout</a></li>
+    		    </ul>
+    		</div>
+    	    </div>
+    	</div>
+	<?php endif; ?>
+
+	<div class="container">
+	    <?php if (Session::get_flash('success')): ?>
+    	    <div class="alert alert-success alert-dismissable">
+    		<p><?php echo implode('</p><p>', e((array) Session::get_flash('success'))); ?></p>
+    	    </div>
+	    <?php endif; ?>
+	    <?php if (Session::get_flash('error')): ?>
+    	    <div class="alert alert-danger alert-dismissable">
+    		<p><?php echo implode('</p><p>', e((array) Session::get_flash('error'))); ?></p>
+    	    </div>
+	    <?php endif; ?>
+	    <?php echo $partials['content']; ?>
+	</div>
+    </body>
+</html>

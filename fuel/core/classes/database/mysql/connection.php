@@ -72,6 +72,9 @@ class Database_MySQL_Connection extends \Database_Connection
 			'compress'	 => true,
 		));
 
+		// Prevent this information from showing up in traces
+		unset($this->_config['connection']['username'], $this->_config['connection']['password']);
+
 		try
 		{
 			// Build right first argument for mysql_connect()
@@ -113,7 +116,7 @@ class Database_MySQL_Connection extends \Database_Connection
 			// No connection exists
 			$this->_connection = null;
 
-			throw new \Database_Exception(str_replace($password, str_repeat('*', 10), mysql_error()), mysql_errno());
+			throw new \Database_Exception(mysql_error(), mysql_errno());
 		}
 
 		// \xFF is a better delimiter, but the PHP driver uses underscore
@@ -240,7 +243,7 @@ class Database_MySQL_Connection extends \Database_Connection
 				}
 			}
 
-			$benchmark = \Profiler::start($this->_instance, $sql, $stacktrace);
+			$benchmark = \Profiler::start("Database ({$this->_instance})", $sql, $stacktrace);
 		}
 
 		if ( ! empty($this->_config['connection']['persistent'])

@@ -1,0 +1,15 @@
+<div class="jumbotron">
+    <h2>Viewing <span class='muted'>#<?php echo $stock->id; ?></span></h2>
+
+    <p>
+	<strong>Name:</strong>
+	<?php echo $stock->name; ?></p>
+
+
+    <?php
+    if ($auth_instance->member(50) || $auth_instance->member(100)) :
+	echo Html::anchor('stocks/edit/' . $stock->id, 'Edit') . ' |';
+    endif; 
+    ?>
+    <?php echo Html::anchor('stocks', 'Back'); ?>
+</div>

@@ -1,0 +1,7 @@
+<?= \Form::open(array('class' => 'form-auth')); ?>
+<h2>Please, Log in</h2>
+<?= \Form::input('username', '', array('placeholder' => 'Username or Email', 'class' => 'form-control')); ?>
+<?= \Form::input('password', '', array('placeholder' => 'Password', 'type' => 'password', 'class' => 'form-control')); ?>
+<?= \Form::button('login', 'Login <span class="glyphicon glyphicon-chevron-right"></span>', array('class' => 'btn btn-lg btn-primary btn-block', 'type' => 'submit')); ?>
+<a href="<?= Uri::create('auth/register'); ?>" class="btn btn-lg btn-info btn-block">or Register <span class="glyphicon glyphicon-user"></span></a>
+<?= \Form::close(); ?>

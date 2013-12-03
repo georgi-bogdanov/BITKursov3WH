@@ -126,26 +126,12 @@ class Security
 				{
 					foreach($var as $key => $value)
 					{
-						if ($value instanceOf \Sanitization)
-						{
-							$value->sanitize();
-						}
-						else
-						{
-							$var[$key] = call_user_func($filter, $value);
-						}
+						$var[$key] = call_user_func($filter, $value);
 					}
 				}
 				else
 				{
-					if ($var instanceOf \Sanitization)
-					{
-						$var->sanitize();
-					}
-					else
-					{
-						$var = call_user_func($filter, $var);
-					}
+					$var = call_user_func($filter, $var);
 				}
 			}
 
@@ -156,26 +142,12 @@ class Security
 				{
 					foreach($var as $key => $value)
 					{
-						if ($value instanceOf \Sanitization)
-						{
-							$value->sanitize();
-						}
-						else
-						{
-							$var[$key] = preg_replace('#['.$filter.']#ui', '', $value);
-						}
+						$var[$key] = preg_replace('#['.$filter.']#ui', '', $value);
 					}
 				}
 				else
 				{
-					if ($var instanceOf \Sanitization)
-					{
-						$var->sanitize();
-					}
-					else
-					{
-						$var = preg_replace('#['.$filter.']#ui', '', $var);
-					}
+					$var = preg_replace('#['.$filter.']#ui', '', $var);
 				}
 			}
 		}
@@ -236,12 +208,6 @@ class Security
 		if (is_string($value))
 		{
 			$value = htmlentities($value, $flags, $encoding, $double_encode);
-		}
-		elseif (is_object($value) and $value instanceOf \Sanitization)
-		{
-			$value->sanitize();
-			return $value;
-
 		}
 		elseif (is_array($value) or ($value instanceof \Iterator and $value instanceof \ArrayAccess))
 		{

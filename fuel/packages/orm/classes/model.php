@@ -24,7 +24,7 @@ class RecordNotFound extends \OutOfBoundsException {}
  */
 class FrozenObject extends \RuntimeException {}
 
-class Model implements \ArrayAccess, \Iterator, \Sanitization
+class Model implements \ArrayAccess, \Iterator
 {
 	/* ---------------------------------------------------------------------------
 	 * Static usage
@@ -736,11 +736,6 @@ class Model implements \ArrayAccess, \Iterator, \Sanitization
 	protected $_frozen = false;
 
 	/**
-	 * @var  bool  $_sanitization_enabled  If this is a records data will be sanitized on get
-	 */
-	protected $_sanitization_enabled = false;
-
-	/**
 	 * @var  array  keeps the current state of the object
 	 */
 	protected $_data = array();
@@ -1063,26 +1058,17 @@ class Model implements \ArrayAccess, \Iterator, \Sanitization
 	 */
 	public function & get($property, array $conditions = array())
 	{
-		// database columns
 		if (array_key_exists($property, static::properties()))
 		{
 			if ( ! array_key_exists($property, $this->_data))
 			{
-				$result = null;
+				// avoid a notice, we're returning by reference
+				$var = null;
+				return $var;
 			}
-			elseif ($this->_sanitization_enabled)
-			{
-				// use a copy
-				$result = $this->_data[$property];
-			}
-			else
-			{
-				// use a reference
-				$result =& $this->_data[$property];
-			}
-		}
 
-		// related models
+			return $this->_data[$property];
+		}
 		elseif ($rel = static::relations($property))
 		{
 			if ( ! array_key_exists($property, $this->_data_relations))
@@ -1090,58 +1076,24 @@ class Model implements \ArrayAccess, \Iterator, \Sanitization
 				$this->_data_relations[$property] = $rel->get($this, $conditions);
 				$this->_update_original_relations(array($property));
 			}
-
-			$result =& $this->_data_relations[$property];
+			return $this->_data_relations[$property];
 		}
-
-		// EAV properties
-		elseif (($result = $this->_get_eav($property)) !== false)
+		elseif (($value = $this->_get_eav($property)) !== false)
 		{
-			// nothing else to do here
+			return $value;
 		}
-
-		// database view columns
 		elseif ($this->_view and in_array($property, static::$_views_cached[get_class($this)][$this->_view]['columns']))
 		{
-			if ($this->_sanitization_enabled)
-			{
-				// use a copy
-				$result = $this->_data[$property];
-			}
-			else
-			{
-				// use a reference
-				$result =& $this->_data[$property];
-			}
+			return $this->_data[$property];
 		}
-
-		// stored custom data
 		elseif (array_key_exists($property, $this->_custom_data))
 		{
-			if ($this->_sanitization_enabled)
-			{
-				// use a copy
-				$result = $this->_custom_data[$property];
-			}
-			else
-			{
-				// use a reference
-				$result =& $this->_custom_data[$property];
-			}
+				return $this->_custom_data[$property];
 		}
 		else
 		{
 			throw new \OutOfBoundsException('Property "'.$property.'" not found for '.get_class($this).'.');
 		}
-
-		// do we need to clean before returning the result?
-		if ($this->_sanitization_enabled)
-		{
-			$cleaned = \Security::clean($result, null, 'security.output_filter');
-			return $cleaned;
-		}
-
-		return $result;
 	}
 
     /**
@@ -1805,40 +1757,6 @@ class Model implements \ArrayAccess, \Iterator, \Sanitization
 	}
 
 	/**
-	 * Enable sanitization mode in the object
-	 *
-	 * @return  $this
-	 */
-	public function sanitize()
-	{
-		$this->_sanitization_enabled = true;
-
-		return $this;
-	}
-
-	/**
-	 * Disable sanitization mode in the object
-	 *
-	 * @return  $this
-	 */
-	public function unsanitize()
-	{
-		$this->_sanitization_enabled = false;
-
-		return $this;
-	}
-
-	/**
-	 * Returns the current sanitization state of the object
-	 *
-	 * @return  bool
-	 */
-	public function sanitized()
-	{
-		return $this->_sanitization_enabled;
-	}
-
-	/**
 	 * Method for use with Fieldset::add_model()
 	 *
 	 * @param   Fieldset     Fieldset instance to add fields to
@@ -1907,7 +1825,7 @@ class Model implements \ArrayAccess, \Iterator, \Sanitization
 			}
 			elseif (property_exists($this, '_eav') and ! empty(static::$_eav))
 			{
-				$this->_set_eav($property, $value);
+				$this->{$property} = $value;
 			}
 			else
 			{

@@ -12,7 +12,7 @@
 
 namespace Fuel\Core;
 
-class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializable, \Sanitization
+class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializable
 {
 
 	/**
@@ -373,11 +373,6 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	}
 
 	/**
-	 * @var  array  $_data  Data container for this object
-	 */
-	protected $_data = array();
-
-	/**
 	 * @var  bool  $_is_new  If this is a new record
 	 */
 	protected $_is_new = true;
@@ -386,11 +381,6 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 * @var  bool  $_is_frozen  If this is a record is frozen
 	 */
 	protected $_is_frozen = false;
-
-	/**
-	 * @var  bool  $_sanitization_enabled  If this is a records data will be sanitized on get
-	 */
-	protected $_sanitization_enabled = false;
 
 	/**
 	 * @var  object  $_validation  The validation instance
@@ -405,12 +395,18 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function __construct(array $data = array())
 	{
-		if (isset($this->_data[static::primary_key()]))
+		if (isset($this->{static::primary_key()}))
 		{
 			$this->is_new(false);
 		}
 
-		$this->set($data);
+		if ( ! empty($data))
+		{
+			foreach ($data as $key => $value)
+			{
+				$this->{$key} = $value;
+			}
+		}
 	}
 
 	/**
@@ -422,44 +418,7 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function __set($property, $value)
 	{
-		$this->_data[$property] = $value;
-	}
-
-	/**
-	 * Magic getter to fetch data from the data container
-	 *
-	 * @param   string  $property  The property name
-	 * @return  mixed
-	 */
-	public function __get($property)
-	{
-		if (isset($this->_data[$property]))
-		{
-			return $this->_sanitization_enabled ? \Security::clean($this->_data[$property], null, 'security.output_filter') : $this->_data[$property];
-		}
-
-		throw new \OutOfBoundsException('Property "'.$property.'" not found for '.get_called_class().'.');
-	}
-
-	/**
-	 * Magic isset to check if values exist
-	 *
-	 * @param   string  $property  The property name
-	 * @return  bool  whether or not the property exists
-	 */
-	public function __isset($property)
-	{
-		return isset($this->_data[$property]);
-	}
-
-	/**
-	 * Magic unset to remove existing properties
-	 *
-	 * @param   string  $property  The property name
-	 */
-	public function __unset($property)
-	{
-		unset($this->_data[$property]);
+		$this->{$property} = $value;
 	}
 
 	/**
@@ -474,16 +433,16 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 		{
 			if (isset(static::$_mass_whitelist))
 			{
-				in_array($key, static::$_mass_whitelist) and $this->_data[$key] = $value;
+				in_array($key, static::$_mass_whitelist) and $this->{$key} = $value;
 			}
 			elseif (isset(static::$_mass_blacklist))
 			{
-				( ! in_array($key, static::$_mass_blacklist)) and $this->_data[$key] = $value;
+				( ! in_array($key, static::$_mass_blacklist)) and $this->{$key} = $value;
 			}
 			else
 			{
 				// no static::$_mass_whitelist or static::$_mass_blacklist set, proceed with default behavior
-				$this->_data[$key] = $value;
+				$this->{$key} = $value;
 			}
 		}
 		return $this;
@@ -503,7 +462,7 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 			throw new \Exception('Cannot modify a frozen row.');
 		}
 
-		$vars = $this->_data;
+		$vars = $this->to_array();
 
 		// Set default if there are any
 		isset(static::$_defaults) and $vars = $vars + static::$_defaults;
@@ -646,40 +605,6 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	}
 
 	/**
-	 * Enable sanitization mode in the object
-	 *
-	 * @return  $this
-	 */
-	public function sanitize()
-	{
-		$this->_sanitization_enabled = true;
-
-		return $this;
-	}
-
-	/**
-	 * Disable sanitization mode in the object
-	 *
-	 * @return  $this
-	 */
-	public function unsanitize()
-	{
-		$this->_sanitization_enabled = false;
-
-		return $this;
-	}
-
-	/**
-	 * Returns the current sanitization state of the object
-	 *
-	 * @return  bool
-	 */
-	public function sanitized()
-	{
-		return $this->_sanitization_enabled;
-	}
-
-	/**
 	 * Returns the a validation object for the model.
 	 *
 	 * @return  object  Validation object
@@ -710,36 +635,39 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function to_array()
 	{
-		return $this->_data;
+		return get_object_public_vars($this);
 	}
 
 	/**
 	 * Implementation of the Iterator interface
 	 */
 
+	protected $_iterable = array();
+
 	public function rewind()
 	{
-		reset($this->_data);
+		$this->_iterable = $this->to_array();
+		reset($this->_iterable);
 	}
 
 	public function current()
 	{
-		return current($this->_data);
+		return current($this->_iterable);
 	}
 
 	public function key()
 	{
-		return key($this->_data);
+		return key($this->_iterable);
 	}
 
 	public function next()
 	{
-		return next($this->_data);
+		return next($this->_iterable);
 	}
 
 	public function valid()
 	{
-		return key($this->_data) !== null;
+		return key($this->_iterable) !== null;
 	}
 
 	/**
@@ -751,7 +679,7 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function offsetSet($offset, $value)
 	{
-		$this->_data[$offset] = $value;
+		$this->{$offset} = $value;
 	}
 
 	/**
@@ -762,7 +690,7 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function offsetExists($offset)
 	{
-		return isset($this->_data[$offset]);
+		return property_exists($this, $offset);
 	}
 
 	/**
@@ -773,7 +701,7 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->_data[$offset]);
+		unset($this->{$offset});
 	}
 
 	/**
@@ -784,9 +712,9 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function offsetGet($offset)
 	{
-		if (isset($this->_data[$offset]))
+		if (property_exists($this, $offset))
 		{
-			return $this->_data[$offset];
+			return $this->{$offset};
 		}
 
 		throw new \OutOfBoundsException('Property "'.$offset.'" not found for '.get_called_class().'.');
@@ -804,7 +732,7 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 			return true;
 		}
 
-		$vars = $this->_data;
+		$vars = $this->to_array();
 
 		// Set default if there are any
 		isset(static::$_defaults) and $vars = $vars + static::$_defaults;
@@ -933,7 +861,7 @@ class Model_Crud extends \Model implements \Iterator, \ArrayAccess, \Serializabl
 	 */
 	public function serialize()
 	{
-		$data = $this->_data;
+		$data = $this->to_array();
 
 		$data['_is_new'] = $this->_is_new;
 		$data['_is_frozen'] = $this->_is_frozen;

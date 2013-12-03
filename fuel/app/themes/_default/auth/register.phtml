@@ -1,0 +1,27 @@
+<?= $response; ?>
+
+<?= \Form::open(array('class' => 'form-auth')); ?>
+<h2>Register</h2>
+
+<?= \Form::input('username', $data['username'], array('id' => 'username', 'placeholder' => 'Username', 'class' => 'form-control')); ?>
+
+<?php
+$email_input = array('id' => 'email', 'placeholder' => 'Email', 'class' => 'form-control');
+if (isset($invited_email))
+{
+    $email_input['readonly'] = 'readonly';
+    $data['email'] = $invited_email;
+}
+echo \Form::input('email', $data['email'], $email_input);
+?>
+
+<?= \Form::input('password', '', array('id' => 'password', 'placeholder' => 'Password', 'type' => 'password', 'class' => 'form-control')); ?>
+
+<label class="checkbox">
+    <?= \Form::checkbox('agree', 1, false, array('id' => 'agree', $data['agree'])) ?> I accept the <?= Html::anchor('pages/terms_of_service', 'Terms of Service'); ?>
+</label>
+
+<?= \Form::button('join', 'Join <span class="glyphicon glyphicon-chevron-right"></span>', array('type' => 'submit', 'class' => 'btn btn-lg btn-primary btn-block')) ?>
+
+<a href="<?= Uri::create('auth/login'); ?>" class="btn btn-lg btn-info btn-block">or Login <span class="glyphicon glyphicon-lock"></span></a>
+<?= \Form::close(); ?>

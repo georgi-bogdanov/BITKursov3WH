@@ -1,0 +1,23 @@
+<div class="jumbotron">
+    <h2>Editing <span class='muted'>Stockgroup</span></h2>
+    <br>
+
+    <?php echo Form::open(array("class" => "form-horizontal")); ?>
+
+    <fieldset>
+	<div class="form-group">
+	    <?php echo Form::label('Name', 'name', array('class' => 'control-label')); ?>
+
+	    <?php echo Form::input('name', Input::post('name', isset($stockgroup) ? $stockgroup->name : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Name')); ?>
+
+	</div>
+	<div class="form-group">
+	    <label class='control-label'>&nbsp;</label>
+	    <?php echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); ?>		</div>
+    </fieldset>
+    <?php echo Form::close(); ?>
+    <p>
+	<?php echo Html::anchor('stockgroups/view/' . $stockgroup->id, 'View'); ?> |
+	<?php echo Html::anchor('stockgroups', 'Back'); ?></p>
+
+</div>

@@ -1,0 +1,42 @@
+<div class="jumbotron">
+    <h2>Editing <span class='muted'>Stock</span></h2>
+    <br />
+
+    <?php echo Form::open(array("class" => "form-horizontal")); ?>
+
+    <fieldset>
+	<div class="form-group">
+	    <?php echo Form::label('Name', 'name', array('class' => 'control-label')); ?>
+	    <?php
+	    echo Form::input('name', Input::post('name', isset($stock) ? $stock->name : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Name'));
+	    ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Qty', 'qty', array('class' => 'control-label')); ?>
+	    <?php
+	    echo Form::input('qty', Input::post('qty', isset($stock) ? $stock->qty : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Name'));
+	    ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Description', 'description', array('class' => 'control-label')); ?>
+	    <?php
+	    echo Form::textarea('description', Input::post('description', isset($stock) ? $stock->description : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'description'));
+	    ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Stockgroup', 'stockgroup_id', array('class' => 'control-label')); ?>
+	    <?php
+	    echo Form::select('stockgroup_id', Input::post('stockgroup_id', isset($stock) ? $stock->stockgroup_id : ''), $stockgroups, array('class' =>'col-md-4 form-control'));
+	    ?>
+	</div>
+	<div class="form-group">
+	    <label class='control-label'>&nbsp;</label>
+	    <?php echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); ?>		
+	</div>
+    </fieldset>
+    <?php echo Form::close(); ?>
+    <p>
+	<?php echo isset($stock) ? Html::anchor('stockgroups/view/' . $stock->id, 'View') . ' |' : ''; ?>
+	<?php echo Html::anchor('stocks', 'Back'); ?>
+    </p>
+</div>

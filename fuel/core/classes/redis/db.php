@@ -105,9 +105,6 @@ class Redis_Db
 		{
 			// execute the auth command if a password is present in config
 			empty($config['password']) or $this->auth($config['password']);
-
-			// Select database using zero-based numeric index
-			empty($config['database']) or $this->select($config['database']);
 		}
 	}
 

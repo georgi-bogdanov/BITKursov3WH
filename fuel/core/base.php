@@ -419,16 +419,10 @@ if ( ! function_exists('call_fuel_func_array'))
 		// if an array is passed, extract the object and method to call
 		if (is_array($callback) and isset($callback[1]) and is_object($callback[0]))
 		{
-			// make sure our arguments array is indexed
-			if ($count = count($args))
-			{
-				$args = array_values($args);
-			}
-
 			list($instance, $method) = $callback;
 
 			// calling the method directly is faster then call_user_func_array() !
-			switch ($count)
+			switch (count($args))
 			{
 				case 0:
 					return $instance->$method();

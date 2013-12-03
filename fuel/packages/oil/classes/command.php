@@ -294,15 +294,13 @@ HELP;
 		}
 	}
 
-	protected static function print_exception(\Exception $ex)
+	private static function print_exception(\Exception $ex)
 	{
 		\Cli::error('Uncaught exception '.get_class($ex).': '.$ex->getMessage());
-		if (\Fuel::$env != \Fuel::PRODUCTION)
-		{
-			\Cli::error('Callstack: ');
-			\Cli::error($ex->getTraceAsString());
-		}
+		\Cli::error('Callstack: ');
+		\Cli::error($ex->getTraceAsString());
 		\Cli::beep();
+
 		\Cli::option('speak') and `say --voice="Trinoids" "{$ex->getMessage()}"`;
 
 		if (($previous = $ex->getPrevious()) != null)
@@ -345,7 +343,7 @@ HELP;
 
 	}
 
-	protected static function _clear_args($actions = array())
+	private static function _clear_args($actions = array())
 	{
 		foreach ($actions as $key => $action)
 		{

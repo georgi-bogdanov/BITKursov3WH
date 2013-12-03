@@ -55,7 +55,6 @@ class Profiler
 				'sql' => \Security::htmlentities($sql),
 				'time' => static::$profiler->getMicroTime(),
 				'stacktrace' => $stacktrace,
-				'dbname' => $dbname,
 			);
 			return true;
 		}

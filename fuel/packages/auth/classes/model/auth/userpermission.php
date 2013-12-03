@@ -27,13 +27,12 @@ class Auth_Userpermission extends \Orm\Model
 	/**
 	 * @var  array  name or names of the primary keys
 	 */
-	protected static $_primary_key = array('id');
+	protected static $_primary_key = array('user_id', 'perms_id');
 
 	/**
 	 * @var array	model properties
 	 */
 	protected static $_properties = array(
-		'id',
 		'user_id',
 		'perms_id',
 		'actions'         => array(

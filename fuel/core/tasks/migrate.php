@@ -154,30 +154,13 @@ class Migrate
 		// run migrations on all specified modules
 		foreach (static::$modules as $module)
 		{
-			// check if the module exists
-			if ( ! \Module::exists($module))
-			{
-				\Cli::write('Requested module "'.$module.'" does not exist!', 'light_red');
-			}
-			else
-			{
-				// run the migration
-				static::$name($module, 'module');
-			}
+			static::$name($module, 'module');
 		}
 
 		// run migrations on all specified packages
 		foreach (static::$packages as $package)
 		{
-			// check if the module exists
-			if ( ! \Package::exists($package))
-			{
-				\Cli::write('Requested package "'.$package.'" does not exist!', 'light_red');
-			}
-			else
-			{
-				static::$name($package, 'package');
-			}
+			static::$name($package, 'package');
 		}
 	}
 
@@ -369,7 +352,6 @@ Fuel commands:
 
 Fuel options:
     -v, [--version]  # Migrate to a specific version ( only 1 item at a time)
-                     # If no version is given, it lists all installed migrations
     --catchup        # Use if you have out-of-sequence migrations that can be safely run
 
     # The following disable default migrations unless you add --default to the command
@@ -393,7 +375,6 @@ Examples:
     php oil r migrate:up --modules=module1,module2 --packages=package1
     php oil r migrate --modules=module1 -v=3
     php oil r migrate --all
-    php oil r migrate --all -v
 
 HELP;
 

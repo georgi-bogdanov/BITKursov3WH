@@ -52,11 +52,6 @@ class Database_Query
 	protected $_as_object = false;
 
 	/**
-	 * @var  Database_Connection  Connection to use when compiling the SQL
-	 */
-	protected $_connection = null;
-
-	/**
 	 * Creates a new SQL query of the specified type.
 	 *
 	 * @param string $sql   query string
@@ -78,7 +73,7 @@ class Database_Query
 		try
 		{
 			// Return the SQL string
-			return $this->compile();
+			return $this->compile(\Database_Connection::instance());
 		}
 		catch (\Exception $e)
 		{
@@ -188,25 +183,6 @@ class Database_Query
 	}
 
 	/**
-	 * Set a DB connection to use when compiling the SQL
-	 *
-	 * @param  mixed  $db
-	 *
-	 * @return  $this
-	 */
-	public function set_connection($db)
-	{
-		if ( ! $db instanceof \Database_Connection)
-		{
-			// Get the database instance
-			$db = \Database_Connection::instance($db);
-		}
-		$this->_connection = $db;
-
-		return $this;
-	}
-
-	/**
 	 * Compile the SQL query and return it. Replaces any parameters with their
 	 * given values.
 	 *
@@ -219,7 +195,7 @@ class Database_Query
 		if ( ! $db instanceof \Database_Connection)
 		{
 			// Get the database instance
-			$db = $this->_connection ?: \Database_Connection::instance($db);
+			$db = \Database_Connection::instance($db);
 		}
 
 		// Import the SQL locally
