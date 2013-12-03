@@ -1,5 +1,6 @@
 # Multiple Environment config, set this to development, staging or production
-# SetEnv FUEL_ENV production
+AddHandler x-httpd-php53 .php
+SetEnv FUEL_ENV production
 
 <IfModule mod_rewrite.c>
 
