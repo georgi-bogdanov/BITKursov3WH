@@ -8,7 +8,7 @@ return array(
         'connection' => array(
             'dsn' => 'mysql:host=127.0.0.1;dbname=bitKursovProekt3',
             'username' => 'root',
-            'password' => 'dasasd',
+            'password' => 'bl4bl4',
         ),
         'profiling' => true,
     ),

@@ -36,7 +36,7 @@
     </fieldset>
     <?php echo Form::close(); ?>
     <p>
-	<?php echo isset($stock) ? Html::anchor('stockgroups/view/' . $stock->id, 'View') . ' |' : ''; ?>
+	<?php echo isset($stock) ? Html::anchor('stocks/view/' . $stock->id, 'View') . ' |' : ''; ?>
 	<?php echo Html::anchor('stocks', 'Back'); ?>
     </p>
 </div>

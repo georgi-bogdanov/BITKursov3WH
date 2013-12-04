@@ -20,14 +20,14 @@ class Controller_Stocks extends \Controller_Base_User
 	$this->_append_title('Stocks');
 
 	$view = \Theme::instance()->view('stocks/index');
-	$view->set('stocks', Model_Stock::find('all'));
+	$view->set('stocks', Model_Stock::find('all', array('order_by' => array('id'=>'desc'))));
 	\Theme::instance()->set_partial('content', $view);
     }
 
     public function action_edit($stock_id = 0)
     {
 	$stock = NULL;
-	
+
 	list($driver, $user_id) = $this->auth_instance->get_user_id();
 
 	//check if user is admin if not redirect him/her to the main site.
@@ -64,12 +64,26 @@ class Controller_Stocks extends \Controller_Base_User
 				'stockgroup_id' => Input::post('stockgroup_id'),
 		    ));
 		}
+		else
+		{
+		    $stock->name = Input::post('name');
+		    $stock->qty = Input::post('qty');
+		    $stock->description = Input::post('description');
+		    $stock->stockgroup_id = Input::post('stockgroup_id');
+		}
 
 		if ($stock and $stock->save())
 		{
-		    Session::set_flash('success', 'Added stock #' . $stock->id . '.');
+		    if (!$stock_id)
+		    {
+			Session::set_flash('success', 'Added stock #' . $stock->id . '.');
+		    }
+		    else
+		    {
+			Session::set_flash('success', 'Edit stock #' . $stock->id . '.');
+		    }
 
-		    Response::redirect('stocks');
+		    Response::redirect('stocks/edit/' . $stock->id);
 		}
 		else
 		{
@@ -107,6 +121,24 @@ class Controller_Stocks extends \Controller_Base_User
 	$view = \Theme::instance()->view('stocks/view');
 	$view->set('stock', $stock);
 	\Theme::instance()->set_partial('content', $view);
+    }
+
+    public function action_delete($id = null)
+    {
+	is_null($id) and Response::redirect('stocks');
+
+	if ($stock = Model_Stock::find($id))
+	{
+	    $stock->delete();
+
+	    Session::set_flash('success', 'Deleted stock #' . $id);
+	}
+	else
+	{
+	    Session::set_flash('error', 'Could not delete stock #' . $id);
+	}
+
+	Response::redirect('stocks');
     }
 
 }

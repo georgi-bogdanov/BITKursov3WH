@@ -34,4 +34,20 @@ class Model_User extends \Orm\Model
 	'invites',
     );
 
+    public static function validate($factory)
+    {
+	$val = Validation::forge($factory);
+	$val->add('username', 'Username')->add_rule('required');
+	$val->add('password', 'Password');
+		//->add_rule('valid_string', array('alpha', 'uppercase', 'lowercase', 'numeric', 'utf8'))
+	$val->add('email', 'Email')->add_rule('required')->add_rule('valid_email');
+	$val->add('group', 'Group')->add_rule('required');
+	$val->add('full_name', 'Full Name')->add_rule('required');
+	$val->add('phone', 'Phone');
+	$val->add('website', 'Website');
+	$val->add('active', 'Active');
+
+	return $val;
+    }
+
 }

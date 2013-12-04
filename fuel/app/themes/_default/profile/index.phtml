@@ -3,7 +3,11 @@
     <p>
 	Welcome to our warehouse program home page.
     </p>
-    <h3><?= $user->username; ?></h3>
+    <h3>Username: <?= $user->username; ?></h3>
 
-    <p><?= $user->profile->full_name; ?></p>
+    <p>Email: <?= $user->email; ?></p>
+    <p>Full Name: <?= $user->profile->full_name; ?></p>
+    <p>Phone: <?= $user->profile->phone; ?></p>
+    <p>Web site: <?= $user->profile->website; ?></p>
+    <p>Group #: <?= $user->group; ?></p>
 </div>

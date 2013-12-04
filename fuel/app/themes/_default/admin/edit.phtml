@@ -1,0 +1,51 @@
+<div class="jumbotron">
+    <h2>Editing <span class='muted'>User</span></h2>
+    <br>
+
+    <?php echo Form::open(array("class" => "form-horizontal")); ?>
+
+    <fieldset>
+	<div class="form-group">
+	    <?php echo Form::label('Username', 'username', array('class' => 'control-label')); ?>
+	    <?php echo Form::input('username', Input::post('username', isset($user) ? $user->username : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Username')); ?>
+	</div>
+	<?php if (!isset($user)) : ?>
+    	<div class="form-group">
+		<?php echo Form::label('Password', 'password', array('class' => 'control-label')); ?>
+		<?php echo Form::password('password', '', array('class' => 'col-md-4 form-control', 'placeholder' => 'Password')); ?>
+    	</div>
+	<?php endif; ?>
+	<div class="form-group">
+	    <?php echo Form::label('Email', 'email', array('class' => 'control-label')); ?>
+	    <?php echo Form::input('email', Input::post('email', isset($user) ? $user->email : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Email')); ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Full Name', 'full_name', array('class' => 'control-label')); ?>
+	    <?php echo Form::input('full_name', Input::post('full_name', isset($user) ? $user->profile->full_name : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Full Name')); ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Phone', 'phone', array('class' => 'control-label')); ?>
+	    <?php echo Form::input('phone', Input::post('phone', isset($user) ? $user->profile->phone : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Phone')); ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Website', 'website', array('class' => 'control-label')); ?>
+	    <?php echo Form::input('website', Input::post('website', isset($user) ? $user->profile->website : ''), array('class' => 'col-md-4 form-control', 'placeholder' => 'Website')); ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Group', 'group', array('class' => 'control-label')); ?>
+	    <?php echo Form::select('group', Input::post('group', isset($user) ? $user->group : ''), array(-1 => 'Banned', 0 => 'Guest', 1 => 'Client', 50 => 'Sales Man', 100 => 'Administator'), array('class' => 'col-md-4 form-control')); ?>
+	</div>
+	<div class="form-group">
+	    <?php echo Form::label('Active', 'active', array('class' => 'control-label')); ?>
+	    <?php echo Form::checkbox('active', 1, (isset($user) ? ($user->profile->active) ? TRUE : FALSE  : FALSE), array('class' => 'col-md-4 form-control')); ?>
+	</div>
+	<div class="form-group">
+	    <label class='control-label'>&nbsp;</label>
+	    <?php echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); ?>		</div>
+    </fieldset>
+    <?php echo Form::close(); ?>
+    <p>
+	<?php echo isset($user) ? Html::anchor('users/view/' . $user->id, 'View') . ' |' : ''; ?>
+	<?php echo Html::anchor('users', 'Back'); ?></p>
+
+</div>

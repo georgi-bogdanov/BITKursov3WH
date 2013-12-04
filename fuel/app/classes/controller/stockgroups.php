@@ -7,7 +7,7 @@ class Controller_Stockgroups extends Controller_Base_Admin
     {
 	$this->_append_title('Stock Groups');
 	
-	$data['stockgroups'] = Model_Stockgroup::find('all');
+	$data['stockgroups'] = Model_Stockgroup::find('all', array('order_by' => array('id'=>'desc')));
 	$view = \Theme::instance()->view('stockgroups/index', $data);
 	\Theme::instance()->set_partial('content', $view);
     }
